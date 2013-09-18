@@ -1,7 +1,7 @@
 package i18n
 
 import (
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
 )
 
 const defaultLocale = ""
@@ -36,10 +36,16 @@ func AddTranslation(locale, context, content, translation string) string {
 // may have different translations.
 //
 // See the goi18n command line tool for documentation on how to extract messages for translation.
-// http://github.com/nicksnyder/go-i18n
+// http://github.com/ledzep2/go-i18n
 func NewMessage(content, context string) *Message {
 	id := AddTranslation(defaultLocale, context, content, content)
 	return &Message{id: id}
+}
+
+func TR(content string) string {
+	id := AddTranslation(defaultLocale, "", content, content)
+	msg := &Message{id: id}	
+	return msg.String()
 }
 
 // Message is a string that is translated into multiple langauges.

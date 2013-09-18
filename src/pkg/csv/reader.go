@@ -2,10 +2,9 @@ package csv
 
 import (
 	"bufio"
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
 	"io"
-	"csv"
-	"os"
+	"encoding/csv"
 )
 
 type Reader struct {
@@ -16,7 +15,7 @@ func NewReader() msg.Reader {
 	return &Reader{}
 }
 
-func (r *Reader) ReadMessages(rs io.ReadSeeker) ([]msg.Message, os.Error) {
+func (r *Reader) ReadMessages(rs io.ReadSeeker) ([]msg.Message, error) {
 	// Peek ahead to detect the separator character that was used to encode the header
 	_, err := rs.Seek(0, len(header[0]))
 	if err != nil {
@@ -24,8 +23,8 @@ func (r *Reader) ReadMessages(rs io.ReadSeeker) ([]msg.Message, os.Error) {
 	}
 
 	// The next rune should be the separator
-	rd, err := bufio.NewReaderSize(rs, 8)
-	if err != nil {
+	rd := bufio.NewReaderSize(rs, 8)
+	if rd == nil {
 		return nil, err
 	}
 	fieldsep, _, err := rd.ReadRune()

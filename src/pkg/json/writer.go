@@ -1,10 +1,9 @@
 package json
 
 import (
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
 	"io"
-	"json"
-	"os"
+	"encoding/json"
 )
 
 type Writer struct {
@@ -15,7 +14,7 @@ func NewWriter() msg.Writer {
 	return &Writer{}
 }
 
-func (w *Writer) WriteMessages(iw io.Writer, m []msg.Message) os.Error {
+func (w *Writer) WriteMessages(iw io.Writer, m []msg.Message) error {
 	json, err := json.MarshalIndent(m, "", "  ")
 	if err != nil {
 		return err

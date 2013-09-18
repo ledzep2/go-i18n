@@ -1,6 +1,6 @@
 include $(GOROOT)/src/Make.inc
 
-TARG=github.com/nicksnyder/go-i18n/src/pkg/goio
+TARG=github.com/ledzep2/go-i18n/src/pkg/goio
 GOFILES=\
 		reader.go\
 		writer.go

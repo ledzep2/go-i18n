@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/nicksnyder/go-i18n/src/pkg/i18n"
+	"github.com/ledzep2/go-i18n/src/pkg/i18n"
 )
 
 var (

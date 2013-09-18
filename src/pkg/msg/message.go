@@ -4,19 +4,18 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"io"
-	"os"
 )
 
 // Reader is the interface that provides a method
 // to read messages from an io.ReadSeeker.
 type Reader interface {
-	ReadMessages(rs io.ReadSeeker) ([]Message, os.Error)
+	ReadMessages(rs io.ReadSeeker) ([]Message, error)
 }
 
 // Writer is the interface that provides a method
 // to write messages to an io.Writer.
 type Writer interface {
-	WriteMessages(w io.Writer, msgs []Message) os.Error
+	WriteMessages(w io.Writer, msgs []Message) error
 }
 
 // Message represents a serializable message
@@ -32,5 +31,5 @@ func Id(context, content string) string {
 	h := md5.New()
 	h.Write([]byte(context))
 	h.Write([]byte(content))
-	return hex.EncodeToString(h.Sum())
+	return hex.EncodeToString(h.Sum(nil))
 }

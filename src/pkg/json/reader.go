@@ -1,11 +1,10 @@
 package json
 
 import (
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
 	"io"
 	"io/ioutil"
-	"json"
-	"os"
+	"encoding/json"
 )
 
 type Reader struct {
@@ -16,7 +15,7 @@ func NewReader() msg.Reader {
 	return &Reader{}
 }
 
-func (r *Reader) ReadMessages(rs io.ReadSeeker) ([]msg.Message, os.Error) {
+func (r *Reader) ReadMessages(rs io.ReadSeeker) ([]msg.Message, error) {
 	data, err := ioutil.ReadAll(rs)
 	if err != nil {
 		return nil, err

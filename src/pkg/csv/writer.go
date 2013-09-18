@@ -1,10 +1,9 @@
 package csv
 
 import (
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
 	"io"
-	"csv"
-	"os"
+	"encoding/csv"
 )
 
 type Writer struct {
@@ -16,10 +15,10 @@ func NewWriter(fieldsep int, crlf bool) msg.Writer {
 	return &Writer{fieldsep: fieldsep, crlf: crlf}
 }
 
-func (w *Writer) WriteMessages(wr io.Writer, msgs []msg.Message) os.Error {
+func (w *Writer) WriteMessages(wr io.Writer, msgs []msg.Message) error {
 	c := csv.NewWriter(wr)
 	defer c.Flush()
-	c.Comma = w.fieldsep
+	c.Comma = rune(w.fieldsep)
 	c.UseCRLF = w.crlf
 	c.Write(header)
 	for _, m := range msgs {

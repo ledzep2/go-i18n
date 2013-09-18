@@ -3,17 +3,19 @@ package format
 import (
 	"flag"
 	"fmt"
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
-	"github.com/nicksnyder/go-i18n/src/pkg/csv"
-	"github.com/nicksnyder/go-i18n/src/pkg/json"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/csv"
+	"github.com/ledzep2/go-i18n/src/pkg/json"
+	"github.com/ledzep2/go-i18n/src/pkg/goio"
 	"os"
 	"path/filepath"
 	"regexp"
-	"utf8"
+	"unicode/utf8"
 )
 
 // Flags
 var (
+	packagename string
 	outformat   string
 	outdir      string
 	csvfieldsep string
@@ -39,7 +41,8 @@ func usage() {
 func Run(args []string) {
 	flags = flag.NewFlagSet("format", flag.ExitOnError)
 	flags.Usage = usage
-	flags.StringVar(&outformat, "format", "json", "The format used to output messages. Supported formats: json, csv")
+	flags.StringVar(&packagename, "p", "main", "The package name of generated go files")
+	flags.StringVar(&outformat, "format", "go", "The format used to output messages. Supported formats: json, csv")
 	flags.StringVar(&outdir, "dir", ".", "The directory where output files will be written.")
 	flags.StringVar(&csvfieldsep, "csvfieldsep", ",", "The field delimiter to use in csv files.")
 	flags.BoolVar(&csvcrlf, "csvcrlf", false, `True to use \r\n as the line terminator in csv files. Defaults to \n.`)
@@ -51,20 +54,23 @@ func Run(args []string) {
 	}
 
 	var w msg.Writer
-	switch outformat {
-	case "json":
-		w = json.NewWriter()
-	case "csv":
-		w = csv.NewWriter(getCsvFieldSep(), csvcrlf)
-	default:
-		exitf("Unsupported output format: %s\n", outformat)
-	}
 
 	for _, filename := range filenames {
 		locale, informat := parseFilename(filename)
 		if locale == "" {
 			errorf("Skipping file with unknown locale: %s\n", filename)
 			continue
+		}
+
+		switch outformat {
+		case "json":
+			w = json.NewWriter()
+		case "csv":
+			w = csv.NewWriter(getCsvFieldSep(), csvcrlf)
+		case "go":
+			w = goio.NewWriter(packagename, locale)
+		default:
+			exitf("Unsupported output format: %s\n", outformat)
 		}
 
 		var r msg.Reader
@@ -80,13 +86,13 @@ func Run(args []string) {
 
 		file, err := os.Open(filename)
 		if err != nil {
-			errorf(err.String())
+			errorf(err.Error())
 			continue
 		}
 
 		m, err := r.ReadMessages(file)
 		if err != nil {
-			errorf(err.String())
+			errorf(err.Error())
 			continue
 		}
 
@@ -96,8 +102,8 @@ func Run(args []string) {
 
 	for locale, bundle := range bundles {
 		writeFile(w, "all", locale, bundle.Messages())
-		writeFile(w, "untranslated", locale, bundle.UntranslatedMessages())
-		writeFile(w, "translated", locale, bundle.TranslatedMessages())
+		//writeFile(w, "untranslated", locale, bundle.UntranslatedMessages())
+		//writeFile(w, "translated", locale, bundle.TranslatedMessages())
 	}
 }
 
@@ -105,7 +111,7 @@ func writeFile(w msg.Writer, prefix, locale string, msgs []msg.Message) {
 	filename := filepath.Join(outdir, fmt.Sprintf("%s.%s.%s", prefix, locale, outformat))
 	file, err := os.Create(filename)
 	if err != nil {
-		errorf(err.String())
+		errorf(err.Error())
 		return
 	}
 	defer file.Close()
@@ -145,7 +151,7 @@ func getCsvFieldSep() int {
 	}
 	rune, size := utf8.DecodeRuneInString(csvfieldsep)
 	if size > 0 {
-		return rune
+		return int(rune)
 	}
 	return ','
 }

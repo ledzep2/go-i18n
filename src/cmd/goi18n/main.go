@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/nicksnyder/go-i18n/src/pkg/extract"
-	"github.com/nicksnyder/go-i18n/src/pkg/format"
+	"github.com/ledzep2/go-i18n/src/pkg/extract"
+	"github.com/ledzep2/go-i18n/src/pkg/format"
 	"os"
 )
 

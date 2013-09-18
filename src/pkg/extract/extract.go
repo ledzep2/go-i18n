@@ -3,13 +3,13 @@ package extract
 import (
 	"flag"
 	"fmt"
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
-	"github.com/nicksnyder/go-i18n/src/pkg/csv"
-	"github.com/nicksnyder/go-i18n/src/pkg/goio"
-	"github.com/nicksnyder/go-i18n/src/pkg/json"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/csv"
+	"github.com/ledzep2/go-i18n/src/pkg/goio"
+	"github.com/ledzep2/go-i18n/src/pkg/json"
 	"io"
 	"os"
-	"utf8"
+	"unicode/utf8"
 )
 
 // Flags
@@ -58,7 +58,7 @@ func Run(args []string) {
 	} else {
 		file, err := os.Create(filename)
 		if err != nil {
-			exitf(err.String())
+			exitf(err.Error())
 		}
 		defer file.Close()
 		dst = file
@@ -69,13 +69,13 @@ func Run(args []string) {
 	for _, filename := range filenames {
 		file, err := os.Open(filename)
 		if err != nil {
-			errorf(err.String())
+			errorf(err.Error())
 			continue
 		}
 
 		m, err := r.ReadMessages(file)
 		if err != nil {
-			errorf(err.String())
+			errorf(err.Error())
 			continue
 		}
 
@@ -100,7 +100,7 @@ func getCsvFieldSep() int {
 	}
 	rune, size := utf8.DecodeRuneInString(csvfieldsep)
 	if size > 0 {
-		return rune
+		return int(rune)
 	}
 	return ','
 }

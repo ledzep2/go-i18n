@@ -1,4 +1,10 @@
-go-i18n (INCOMPLETE, EXPERIMENTAL, AND UNDER DEVELOPMENT)
+*Updated by ledzep2*
+
+2013.9.18 support go 1.1.2
+
+-------------
+
+go-i18n
 =========================================================
 
 go-i18n is a set of tools that can be used to translate Go programs into multiple lanaguages.
@@ -14,8 +20,8 @@ Installation
 
 Run the following commands to install the go-i18n tools.
 
-    goinstall -u github.com/nicksnyder/go-i18n/src/pkg/i18n
-    goinstall -u github.com/nicksnyder/go-i18n/src/cmd/goi18n
+    goinstall -u github.com/ledzep2/go-i18n/src/pkg/i18n
+    goinstall -u github.com/ledzep2/go-i18n/src/cmd/goi18n
 
 i18n package
 ------------
@@ -36,7 +42,7 @@ A typical workflow looks like this:
 		import (
 			"flag"
 			"fmt"
-			"github.com/nicksnyder/go-i18n/src/pkg/i18n"
+			"github.com/ledzep2/go-i18n/src/pkg/i18n"
 		)
 		
 		var (

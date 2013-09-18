@@ -1,12 +1,11 @@
 package goio
 
 import (
-	"github.com/nicksnyder/go-i18n/src/pkg/msg"
+	"github.com/ledzep2/go-i18n/src/pkg/msg"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"io"
-	"os"
 )
 
 const defaultFilename = "unknown"
@@ -19,7 +18,7 @@ func NewReader() msg.Reader {
 	return &Reader{}
 }
 
-func (r *Reader) ReadMessages(rs io.ReadSeeker) ([]msg.Message, os.Error) {
+func (r *Reader) ReadMessages(rs io.ReadSeeker) ([]msg.Message, error) {
 	fset := token.NewFileSet()
 	file, err := parser.ParseFile(fset, defaultFilename, rs, 0)
 	if err != nil {
@@ -60,7 +59,7 @@ func (v *visitor) Visit(n ast.Node) ast.Visitor {
 func isNewMessageCall(e ast.Expr) bool {
 	switch i := e.(type) {
 	case *ast.SelectorExpr:
-		return i.Sel.Name == "NewMessage" && isI18nIdent(i.X)
+		return ((i.Sel.Name == "NewMessage" && isI18nIdent(i.X)) || i.Sel.Name == "TR")
 	}
 	return false
 }
@@ -74,10 +73,10 @@ func isI18nIdent(e ast.Expr) bool {
 }
 
 func getNewMessageArgs(exprs []ast.Expr) (content, context string, ok bool) {
-	if len(exprs) != 2 {
+	if content, ok = getString(exprs[0]); !ok {
 		return
 	}
-	if content, ok = getString(exprs[0]); !ok {
+	if len(exprs) != 2 {
 		return
 	}
 	context, ok = getString(exprs[1])
